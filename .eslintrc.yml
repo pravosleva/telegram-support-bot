@@ -10,3 +10,5 @@ parserOptions:
 plugins:
   - "@typescript-eslint"
   - "prettier"
+rules:
+  - indent: ["error", 2]

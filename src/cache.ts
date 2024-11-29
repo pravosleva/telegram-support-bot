@@ -16,8 +16,14 @@ const cache: Cache = {
   config: {} as Config,
 };
 
+const isDev = process.env.NODE_ENV === 'development';
+console.log(process.env.NODE_ENV)
+const configFile = isDev
+  ? './config/config.dev.yaml'
+  : './config/config.yaml';
+
 cache.config = YAML.parse(
-  fs.readFileSync('./config/config.yaml', 'utf8'),
+  fs.readFileSync(configFile, 'utf8'),
 );
 
 export default cache;

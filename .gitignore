@@ -1,6 +1,7 @@
 # Config file
 config.ts
 config.yaml
+config.dev.yaml
 support.db
 build/
 *.rsls

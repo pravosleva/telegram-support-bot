@@ -15,7 +15,7 @@
     "main": "build/src/index.js",
     "scripts": {
         "tsc": "tsc",
-        "dev": "ts-node-dev ./src/index.ts",
+        "dev": "NODE_ENV=development ts-node-dev ./src/index.ts",
         "prod": "ts-node ./src/index.ts",
         "build": "tsc",
         "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts' --exit"
