@@ -67,6 +67,7 @@ function initInline(bot: TelegramAddon) {
               removeKeyboard(),
             );
           }
+          
           ctx.session.group = cache.config.categories[i].group_id;
           ctx.session.groupTag = cache.config.categories[i].tag || '';
           ctx.session.groupCategory = cache.config.categories[i].name;

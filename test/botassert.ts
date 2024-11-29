@@ -1,13 +1,16 @@
 /* eslint-disable require-jsdoc */
 
-import assert = require('assert');
+import assert from 'assert';
 
 // override functions
 import {bot, main, msgsToUser, msgsToStaff} from './functions';
 import * as fs from 'fs';
 import * as YAML from 'yaml';
+import { getConfigPath, log } from '../src/utils';
 
-const config = YAML.parse(fs.readFileSync('./config/config.yaml', 'utf8'));
+log({ label: '- botassert', msgs: [] })
+
+const config = YAML.parse(fs.readFileSync(getConfigPath(process.env.NODE_ENV), 'utf8'));
 const lang = config.language;
 
 export interface User {
@@ -57,7 +60,8 @@ class TelegrafContext {
 
 class BotAssert extends TelegrafContext {
   constructor(user?: User) {
-    super(user);
+    if (!!user) super(user)
+    else throw new Error('BotAssert constructor error')
   }
 
   private wildcardCheck(ctx, expectedStaff, expectedUser, f) {
@@ -65,13 +69,18 @@ class BotAssert extends TelegrafContext {
     const msg2 = msgsToStaff;
     const msg3 = msgsToUser;
     const msgStaff = msgsToStaff.pop();
-    if (!new RegExp(expectedStaff, 'g').test(msgStaff)) {
-      assert.fail(`${msgStaff} does not match ${expectedStaff}`);
-    }
+    if (!!msgStaff) {
+      if (!new RegExp(expectedStaff, 'g').test(msgStaff)) {
+        assert.fail(`${msgStaff} does not match ${expectedStaff}`);
+      }
+    } else throw new Error('Incorrect case 1')
+
     const msgUser = msgsToUser.pop();
-    if (!new RegExp(expectedUser, 'g').test(msgUser)) {
-      assert.fail(`${msgUser} does not match ${expectedUser}`);
-    }
+    if (!!msgUser) {
+      if (!new RegExp(expectedUser, 'g').test(msgUser)) {
+        assert.fail(`${msgUser} does not match ${expectedUser}`);
+      }
+    } else throw new Error('Incorrect case 2')
   }
 
   // user sends msg helper

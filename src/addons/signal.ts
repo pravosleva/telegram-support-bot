@@ -12,7 +12,7 @@ const username = cache.config.signal_number;
  * @param {String} id Chat ID
  * @param {String} msg Msg
  */
-const message = (id: string, msg: string) => {
+const message = (id: number, msg: string) => {
   exec(
       `signal-cli -u ${username} send -m 
     '${msg}' ${id}`,
@@ -101,7 +101,10 @@ const init = (handle: Function) => {
           // Message ended
           if (msg.time && msg.sender && msg.body) {
             // Message received
+            // TODO: Wtf?
+            // @ts-ignore
             fakectx.message.from.id = 'SIGNAL' + msg.sender;
+            // @ts-ignore
             fakectx.message.chat.id = 'SIGNAL' + msg.sender;
             fakectx.message.text = msg.body;
             fakectx.message.from.first_name = msg.name;

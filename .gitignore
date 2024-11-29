@@ -2,6 +2,7 @@
 config.ts
 config.yaml
 config.dev.yaml
+config.test.yaml
 support.db
 build/
 *.rsls

@@ -4,16 +4,16 @@
  */
 const fs = require('fs');
 const YAML = require('yaml');
-const config = YAML.parse(fs.readFileSync('./config/config.yaml', 'utf8'));
+const config = YAML.parse(fs.readFileSync('./config/config.dev.yaml', 'utf8'));
 
 const msgsToUser: Array<string> = [];
 const msgsToStaff: Array<string> = [];
 let waiting = true;
 
-const {createBot, main} = require('../build/src/index.js');
+const {createBot, main} = require('../build/index.js');
 const bot = createBot();
 
-bot.api.sendMessage = function(id, text: string, options) {
+bot.sendMessage = function(id, text: string, options) {
   if (id == config.staffchat_id) {
     // msg to staff
     msgsToStaff.push(text);

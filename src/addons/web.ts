@@ -50,7 +50,11 @@ const init = function(bot: TelegramAddon) {
       }) => {
           socket.on('chat', (msg: string) => {
             socket.emit('chat_user', msg);
+            // TODO: Wtf?
+            // @ts-ignore
             fakectx.message.from.id = 'WEB' + socket.id;
+            // TODO: Wtf?
+            // @ts-ignore
             fakectx.message.chat.id = 'WEB' + socket.id;
             fakectx.message.text = msg;
             ticketHandler(bot, fakectx);

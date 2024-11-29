@@ -6,6 +6,8 @@ const fakectx: Context = {
     web_msg: true,
     message_id: 4260,
     from: {
+      // TODO: Wtf?
+      // @ts-ignore
       id: 'WEB12345678',
       is_bot: false,
       first_name: 'Web User',
@@ -13,6 +15,8 @@ const fakectx: Context = {
       language_code: 'en',
     },
     chat: {
+      // TODO: Wtf?
+      // @ts-ignore
       id: 'WEB12345678',
       first_name: 'Web User',
       username: 'webuser',
@@ -31,13 +35,15 @@ const fakectx: Context = {
     caption: '',
   },
   chat: {
+    // TODO: Wtf?
+      // @ts-ignore
     id: 'WEB12345678',
     first_name: 'Web User',
     username: 'webuser',
     type: 'private',
   },
   session: {
-    group: '',
+    group: 0,
     groupTag: '',
     groupCategory: null
   } as SessionData,

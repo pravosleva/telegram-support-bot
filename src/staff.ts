@@ -44,6 +44,9 @@ function privateReply(ctx: Context, msg: any = {}) {
   if (msg.length === 0) {
     msg = ctx.message;
   }
+  console.log('-- staff:1')
+  console.log(ctx.from)
+  console.log('--')
   // Msg to other end
   middleware.msg(
     ctx.session.modeData.userid,
@@ -108,6 +111,10 @@ function chat(ctx: Context) {
         new RegExp('#T' + '(.*)' + '\n' + cache.config.language.from),
       );
     }
+
+    console.log('-- staff:2')
+    console.log(`userid: ${userid}`)
+    console.log('--')
 
     // replying to non-ticket
     if (userid === null || userid === undefined) {

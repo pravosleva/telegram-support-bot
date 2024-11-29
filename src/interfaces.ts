@@ -13,7 +13,7 @@ interface SessionData {
   modeData: ModeData;
   groupCategory: string | null;
   groupTag: string;
-  group: string;
+  group: number;
   groupAdmin: any;
   getSessionKey: Function;
 }
@@ -74,10 +74,10 @@ interface Category {
   name: string;
   msg: string;
   tag: string;
-  group_id: string;
+  group_id: number;
   subgroups: {
     name: string;
-    group_id: string;
+    group_id: number;
   }[];
 }
 
@@ -111,8 +111,8 @@ interface Config {
 }
 
 interface Cache {
-  ticketID: string;
-  ticketIDs: any;
+  ticketID: number | undefined;
+  ticketIDs: Set<number>;
   ticketStatus: any;
   ticketSent: any;
   html: string;
@@ -126,22 +126,22 @@ interface Cache {
 /**
  * Context
  */
-class Context {
+interface Context {
   update_id: number;
   message: {
     web_msg: boolean;
     message_id: number;
     from: {
-      id: string;
-      is_bot: false;
+      id: number;
+      is_bot: boolean;
       first_name: string;
       username: string;
       language_code: string;
     };
     chat: {
-      id: string;
+      id: number;
       first_name: string;
-      username: string;
+      username?: string;
       type: string;
     };
     date: number;
@@ -155,7 +155,7 @@ class Context {
     caption: string;
   };
   chat: {
-    id: string;
+    id: number;
     first_name: string;
     username: string;
     type: string;

@@ -79,7 +79,7 @@ function fileHandler(type: string, bot: TelegramAddon, ctx: Context) {
     if (ctx.session.admin && userInfo === undefined) {
       // null check here
       if (userid != null) {
-        msgId = userid[1];
+        msgId = Number(userid[1]);
       } else {
         return;
       }
@@ -121,7 +121,7 @@ function fileHandler(type: string, bot: TelegramAddon, ctx: Context) {
                 reply_markup: isPrivate ? replyMarkup(ctx) : {},
               });
               if (
-                ctx.session.group !== '' &&
+                !!ctx.session.group &&
               ctx.session.group !== cache.config.staffchat_id &&
               ctx.session.modeData != {} as ModeData
               ) {
@@ -154,7 +154,7 @@ function fileHandler(type: string, bot: TelegramAddon, ctx: Context) {
                 reply_markup: isPrivate ? replyMarkup(ctx) : {},
               });
               if (
-                ctx.session.group !== '' &&
+                !!ctx.session.group &&
               ctx.session.group !== cache.config.staffchat_id &&
               ctx.session.modeData != {} as ModeData
               ) {
@@ -187,7 +187,7 @@ function fileHandler(type: string, bot: TelegramAddon, ctx: Context) {
                 reply_markup: isPrivate ? replyMarkup(ctx) : {},
               });
               if (
-                ctx.session.group !== '' &&
+                !!ctx.session.group &&
               ctx.session.group !== cache.config.staffchat_id &&
               ctx.session.modeData != {} as ModeData
               ) {

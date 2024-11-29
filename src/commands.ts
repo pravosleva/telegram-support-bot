@@ -26,7 +26,8 @@ function helpCommand(ctx: Context) {
 function clearCommand(ctx: Context) {
   if (!ctx.session.admin) return;
   db.closeAll();
-  cache.ticketIDs.length = 0;
+  // cache.ticketIDs.length = 0;
+  cache.ticketIDs.clear();
   cache.ticketStatus.length = 0;
   cache.ticketSent.length = 0;
   middleware.reply(
@@ -172,11 +173,11 @@ function closeCommand(ctx: Context) {
       userid,
       `${cache.config.language.ticket} ` +
       `#T${ticketId.toString().padStart(6, '0')} ` +
-      `${cache.config.language.closed}\n\n
-      ${cache.config.language.ticketClosed}`,
+      `${cache.config.language.closed}\n\n${cache.config.language.ticketClosed}`,
       { parse_mode: cache.config.parse_mode }, /* .notifications(false) */
     );
-    delete cache.ticketIDs[userid];
+    // delete cache.ticketIDs[userid];
+    cache.ticketIDs.delete(userid);
     delete cache.ticketStatus[userid];
     delete cache.ticketSent[userid];
   }, groups);

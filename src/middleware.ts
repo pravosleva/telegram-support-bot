@@ -1,6 +1,7 @@
 import cache from './cache';
 import * as signal from './addons/signal';
 import { Context } from './interfaces';
+import { log } from '~/utils';
 
 // strict escape
 const strictEscape = function (str: string | any[]) {
@@ -75,9 +76,12 @@ const msg = function (id: string | number, msg: string | string[], extra: any = 
   ) {
     // Signal message
     console.log('Signal message');
+    // TODO: Wtf?
+    // @ts-ignore
     signal.message(id.toString().split('SIGNAL')[1], msg);
   } else {
     msg = msg.replace(/  /g, '');
+    log({ label: '- middleware.ts', msgs: [] })
     cache.bot.sendMessage(id, msg, extra);
   }
 };

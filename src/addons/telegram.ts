@@ -90,9 +90,9 @@ class TelegramAddon {
         mode: null,
         groupCategory: null,
         groupTag: '',
-        group: '',
+        group: 0,
         groupAdmin: {} as any,
-        getSessionKey: (ctx: Context) => {
+        getSessionKey: (ctx: Context): string | null => {
           if (ctx.callbackQuery && ctx.callbackQuery.id) {
             return `${ctx.from.id}:${ctx.from.id}`;
           } else if (ctx.from && ctx.inlineQuery) {
