@@ -90,7 +90,7 @@ function openCommand(ctx: Context) {
     }
     middleware.reply(
       ctx,
-      `*${cache.config.language.openTickets}\n\n* ${openTickets}`,
+      `*${cache.config.language.openTickets}*\n\n${openTickets}`,
       // eslint-disable-next-line new-cap
       { parse_mode: cache.config.parse_mode }, /* .notifications(false) */
     );
