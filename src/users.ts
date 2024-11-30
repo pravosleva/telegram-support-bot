@@ -70,7 +70,7 @@ function autoReply(ctx: Context) {
  * @param {chat} chat Bot chat.
  */
 function chat(ctx: Context, chat: { id: number; first_name: string; username?: string; type: string; }) {
-  cache.ticketID = ctx.message.from.id;
+  cache.setTicketID(ctx.message.from.id);
 
   // Check if auto reply works
   let isAutoReply = false;
@@ -95,15 +95,15 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
   switch (true) {
     case cache.ticketSent[cache.ticketID] === undefined:
       // NOTE: 1. Was not sent early
-      log({ label: 'users:case1 // Was not sent early', msgs: [
-        `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
-      ] })
+      // log({ label: 'users:case1 // Was not sent early', msgs: [
+      //   `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
+      // ] })
 
       // Get Ticket ID from DB
       db.getOpen(
         chat.id,
         ctx.session.groupCategory,
-        function (ticket: { id: string }) {
+        (ticket) => {
           if (!isAutoReply && cache.config.autoreply_confirmation) {
             middleware.msg(
               chat.id,
@@ -182,9 +182,9 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
       break
     case cache.ticketSent[cache.ticketID] < cache.config.spam_cant_msg:
       // NOTE: 2. Could be sent again
-      log({ label: 'users:case2 // Could be sent again', msgs: [
-        `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
-      ] })
+      // log({ label: 'users:case2 // Could be sent again', msgs: [
+      //   `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
+      // ] })
   
       cache.ticketSent[cache.ticketID]++;
       db.getOpen(
@@ -223,9 +223,9 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
       break
     case cache.ticketSent[cache.ticketID] === cache.config.spam_cant_msg:
       // NOTE: 3. Cant be sent again
-      log({ label: '- users:case3 // Cant be sent again', msgs: [
-        `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
-      ] })
+      // log({ label: '- users:case3 // Cant be sent again', msgs: [
+      //   `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
+      // ] })
 
       cache.ticketSent[cache.ticketID]++;
 
@@ -237,9 +237,9 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
       break
   }
   
-  log({ label: 'users:common', msgs: [
-    `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
-  ] })
+  // log({ label: 'users:common', msgs: [
+  //   `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
+  // ] })
 
   db.getOpen(
     cache.ticketID,

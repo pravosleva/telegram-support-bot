@@ -2,6 +2,7 @@ import cache from './cache';
 import * as middleware from './middleware';
 import * as db from './db';
 import { Context } from './interfaces';
+import { log } from '~/utils';
 
 /** Message template helper
  * @param {String} name
@@ -112,17 +113,13 @@ function chat(ctx: Context) {
       );
     }
 
-    console.log('-- staff:2')
-    console.log(`userid: ${userid}`)
-    console.log('--')
-
     // replying to non-ticket
     if (userid === null || userid === undefined) {
       return;
     }
 
     db.getOpen(
-      userid[1],
+      Number(userid[1]),
       ctx.session.groupCategory,
       function (ticket: { userid: string }) {
         if (userid === null || userid === undefined) {
@@ -187,16 +184,23 @@ function chat(ctx: Context) {
         cache.ticketSent[userid[1]] = null;
         // Check if auto close ticket
         if (cache.config.auto_close_tickets) {
-          db.add(userid[1], 'closed', null);
+          if (!isNaN(Number(userid[1])))
+            db.add(Number(userid[1]), 'closed', null)
+          else {
+            log({ label: 'staff // chat -> db.getOpen Error (db.add not called)', type: 'error', msgs: [
+              `userid: ${String(userid)} (${typeof userid})`,
+              `userid[1]: ${userid[1]} (${typeof userid[1]})`,
+            ] })
+            throw new Error('ERR: staff // chat -> db.getOpen Error (db.add not called)')
+          }
         }
       },
     );
-  } catch (e) {
+  } catch (e: Error | any) {
     console.log(e);
     middleware.msg(
       cache.config.staffchat_id,
-      `An error occured, please 
-          report this to your admin: \n\n ${e}`,
+      `An error occured, please report this to your admin:\n\n${e?.message || 'No err?.message'}`,
       // eslint-disable-next-line new-cap
       { parse_mode: cache.config.parse_mode }, /* .notifications(false) */
     );

@@ -65,6 +65,7 @@ language:
   prvChatOpenedCustomer: 'Opened private chat'
   instructionsSent: 'Instructions were sent to you in private chat.'
   openTickets: 'Open Tickets'
+  noOpenTickets: 'No'
   support: 'Support'
   prvChatOnly: 'This command can be used in private chat only.'
   ticketClosed: 'Your ticket was closed by our staff. You can open a new ticket at any time.'

@@ -320,7 +320,7 @@ function fowardHandler(
   let userInfo;
   ctx.getChat().then(function(chat: { type: string }) {
     if (chat.type === 'private') {
-      cache.ticketID = ctx.message.from.id;
+      cache.setTicketID(ctx.message.from.id)
       userInfo =
         `${cache.config.language.from} ${ctx.message.from.first_name} ` +
         `${cache.config.language.language}: ` +

@@ -42,7 +42,7 @@ function createBot() {
  * @param {boolean} logs
  */
 function main(bot: TelegramAddon = defaultBot, logs = true) {
-  cache.bot = defaultBot;
+  cache.setBot(defaultBot);
   // bot.sendMessage(cache.config.staffchat_id, 'Bot started');
   // Check addon
   if (cache.config.signal_enabled) {

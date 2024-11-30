@@ -26,7 +26,7 @@ const init = function(bot: TelegramAddon) {
 
     const {Server} = require('socket.io');
     const io = new Server(server);
-    cache.io = io;
+    cache.setIO(io);
     app.use(limiter);
 
     // app.get('/', (req, res) => {

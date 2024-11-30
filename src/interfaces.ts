@@ -1,4 +1,5 @@
-import TelegramAddon from './addons/telegram';
+// import TelegramAddon from './addons/telegram';
+// import { type Server } from 'socket.io'
 
 interface ModeData {
   ticketid: string;
@@ -53,6 +54,7 @@ interface Language {
   prvChatOpenedCustomer: string;
   instructionsSent: string;
   openTickets: string;
+  noOpenTickets: string;
   support: string;
   prvChatOnly: string;
   ticketClosed: string;
@@ -118,9 +120,6 @@ interface Cache {
   html: string;
   noSound: string;
   markdown: string;
-  io: any;
-  bot: TelegramAddon;
-  config: Config;
 }
 
 /**

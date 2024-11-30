@@ -1,3 +1,5 @@
+import { log } from '~/utils';
+
 const Database = require('better-sqlite3');
 const db = new Database('./config/support.db', {
   /* verbose: console.log */
@@ -28,52 +30,54 @@ const check = function(
 };
 
 const getOpen = function(
-    userid: string | number,
-    category: string | null,
-    callback: Function,
+  userid: number,
+  category: string | null,
+  callback: (ticket?: {
+    userid: string;
+    id: number;
+    status: string;
+    category: string | null;
+  }) => void
 ) {
-  const searchDB = db
-      .prepare(
-          `select * from supportees where (userid = ` +
-        `'${userid}' or id = '${userid}') AND status='open' ` +
-        `${category ? `AND category = '${category}'` : ''}`,
-      )
-      .get();
+  const cmd = [
+    'select * from supportees where ',
+    `(userid = ${userid} or id = ${userid}) `,
+    `AND status='open' `,
+    category ? `AND category = '${category}'` : '',
+  ].join('')
+  const searchDB = db.prepare(cmd).get();
+  log({ label: `db.getOpen(${userid}, ${category}, cb) -> searchDB is ${typeof searchDB}`, type: 'info', msgs: [
+    searchDB, // SAMPLE: undefined | { id: 8, userid: '432590698', status: 'open', category: null }
+  ] })
   callback(searchDB);
 };
 
 const getId = function(
     userid: number,
-    callback: {
-    (ticket: { userid: any; id: { toString: () => string } }): void;
-    (ticket: {
-      userid: any;
-      /* verbose: console.log */
-      id: /* verbose: console.log */ { toString: () => string };
-    }): void;
-    (ticket: { userid: any; id: { toString: () => string } }): void;
-    (arg0: any): void;
-  },
+    callback: (ticket?: {
+      userid: string;
+      id: { toString: () => string }
+    }) => void
 ) {
-  const searchDB = db
-      .prepare(
-          `select * from supportees where (userid = ` +
-        `${userid} or id = ${userid})`,
-      )
-      .get();
+  const cmd = `select * from supportees where (userid = ${userid} or id = ${userid})`
+  const searchDB = db.prepare(cmd).get();
+  log({ label: `db.getId(arg0, ...rst) -> searchDB (${typeof searchDB})`, type: 'info', msgs: [
+    searchDB, // SAMPLE: { id: 1, userid: '432590698', status: 'open', category: null }
+    `arg0: userid= ${userid} (${typeof userid})`,
+  ] })
   callback(searchDB);
 };
 
 const checkBan = function(
-    userid: any,
+    userid: number,
     callback: { (ticket: any): any; (arg0: any): void },
 ) {
   const searchDB = db
-      .prepare(
-          `select * from supportees where (userid = ` +
-        `${userid} or id = ${userid}) AND status='banned' `,
-      )
-      .get();
+    .prepare(
+      `select * from supportees where (userid = ` +
+      `${userid} or id = ${userid}) AND status='banned' `,
+    )
+    .get();
   callback(searchDB);
 };
 
@@ -82,52 +86,65 @@ const closeAll = function() {
 };
 
 const reopen = function(userid: any, category: string) {
-  db.prepare(
+  db
+    .prepare(
       `UPDATE supportees SET status='open'` +
-      `WHERE userid='${userid}' or id='${userid}'` +
+      `WHERE userid=${userid} or id='${userid}'` +
       `${category ? `AND category = '${category}'` : ''}`,
-  ).run();
+    )
+    .run();
 };
 
 const add = function(
-    userid: string | number,
-    status: string,
-    category: string | number | null,
+  userid: number,
+  status: 'closed' | 'open' | 'banned',
+  category: string | number | null,
 ) {
+  log({ label: `db.add(${userid}[${typeof userid}], ${status}, ${category})`, type: 'warn', msgs: [
+    'called'
+  ] })
   let msg;
-  if (status == 'closed') {
-    console.log(
-        `UPDATE supportees SET status='closed' WHERE ` +
-        `(userid='${userid}' or id='${userid}')` +
-        `${category ? `AND category = '${category}'` : ''}`,
-    );
-    msg = db
-        .prepare(
-            `UPDATE supportees SET status='closed' WHERE ` +
-          `(userid='${userid}' or id='${userid}')` +
-          `${category ? `AND category = '${category}'` : ''}`,
-        )
+  let cmd = ''
+  switch (status) {
+    case 'closed':
+      cmd = [
+        `UPDATE supportees SET status='closed' WHERE `,
+        `(userid=${userid} or id='${userid}')`,
+        !!category ? ` AND category = '${category}'` : '',
+      ].join('')
+      msg = db
+        .prepare(cmd)
         .run();
-  } else if (status == 'open') {
-    // db.prepare(`DELETE FROM supportees WHERE userid='${userid}'` +
-    //    ` or id='${userid}'`).run();
-    msg = db
-        .prepare(
-            `REPLACE INTO supportees (userid, ` +
-          `status ${category ? `,category` : ''}) ` +
-          `VALUES ('${userid}', '${status}' ${
-            category ? `,'${category}'` : ''
-          })`,
-        )
+      log({ label: `db add(${userid}[${typeof userid}], ${status}[${typeof status}], ${category}[${typeof category}]) // case1 (closed) -> msg = db.prepare(cmd).run()`, type: 'info', msgs: [
+        msg, // SAMPLE: { changes: 5, lastInsertRowid: 0 }
+      ] });
+      break;
+    case 'open':
+      // db.prepare(`DELETE FROM supportees WHERE userid='${userid}'` +
+      //    ` or id='${userid}'`).run();
+      cmd = [
+        `REPLACE INTO supportees (userid, status${category ? `, category` : ''}) `,
+        `VALUES (${userid}, '${status}'${category ? ` ,'${category}'` : ''})`
+      ].join('')
+      msg = db
+        .prepare(cmd)
         .run();
-  } else if ((status = 'banned')) {
-    msg = db
-        .prepare(
-            `REPLACE INTO supportees (userid, status, category)` +
-          `VALUES ('${userid}', '${status}', 'BANNED')`,
-        )
+      break;
+    case 'banned':
+      cmd = [
+        `REPLACE INTO supportees (userid, status, category) `,
+        `VALUES (${userid}, '${status}', 'BANNED')`
+      ].join('')
+      msg = db
+        .prepare(cmd)
         .run();
+      break;
+    default:
+      break;
   }
+  log({ label: cmd, type: 'cmd.db', msgs: [
+    msg, // SAMPLE: { changes: 1, lastInsertRowid: 20 }
+  ] });
   return msg.changes;
 };
 
@@ -172,7 +189,7 @@ const open = function(
 
   const searchDB = db
       .prepare(
-          `select * from supportees where status = 'open' ` +
+        `select * from supportees where status = 'open' ` +
         `and (category ${category.length > 0 ? searchText : 'is NULL'})`,
       )
       .all();
