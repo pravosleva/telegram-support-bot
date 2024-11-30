@@ -107,12 +107,13 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
           if (!isAutoReply && cache.config.autoreply_confirmation) {
             middleware.msg(
               chat.id,
-              cache.config.language.confirmationMessage + '\n' +
-              (cache.config.show_user_ticket ?
-                cache.config.language.ticket +
-                ' #T' +
-                ticket.id.toString().padStart(6, '0') :
-                ''),
+              [
+                cache.config.language.confirmationMessage,
+                '\n',
+                cache.config.show_user_ticket
+                  ? `\n${cache.config.language.ticket} #T${ticket.id.toString().padStart(6, '0')}`
+                  : ''
+              ].join(''),
             );
           }
 

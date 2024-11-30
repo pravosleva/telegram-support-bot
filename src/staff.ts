@@ -1,7 +1,7 @@
 import cache from './cache';
 import * as middleware from './middleware';
 import * as db from './db';
-import { Context } from './interfaces';
+import { Context, TMessage } from './interfaces';
 import { log } from '~/utils';
 
 /** Message template helper
@@ -12,28 +12,35 @@ import { log } from '~/utils';
  */
 function ticketMsg(
   name: string,
-  message: { text: any; from: { first_name: any } },
+  message: TMessage
 ) {
+  log({ label: 'staff: ticketMsg(name, message)', type: 'info', msgs: [
+    name,
+    message,
+  ] })
+
   const esc: any = middleware.strictEscape;
   if (cache.config.clean_replies) {
     return esc(message.text)
   }
   if (cache.config.anonymous_replies) {
     return (
-      `${cache.config.language.dear} ` +
-      `${esc(name)},\n\n` +
+      `${cache.config.language.dear} ${esc(name)},\n\n` +
       `${esc(message.text)}\n\n` +
       `${cache.config.language.regards}\n` +
       `${cache.config.language.regardsGroup}`
     );
   }
-  return (
-    `${cache.config.language.dear} ` +
-    `${esc(name)},\n\n` +
-    `${esc(message.text)}\n\n` +
-    `${cache.config.language.regards}\n` +
-    `${esc(message.from.first_name)}`
-  );
+  return [
+    `${cache.config.language.dear} ${esc(name)},`,
+    '\n\n',
+    `${esc(message.text)}`,
+    '\n',
+    `${cache.config.language.regards} // ${esc(message.from.first_name)}`,
+    '\n\n--- _Original message_ ---\n',
+    message.reply_to_message.text,
+    '\n---',
+  ].join('');
 }
 
 /**
@@ -41,29 +48,27 @@ function ticketMsg(
  * @param {Object} ctx
  * @param {Object} msg
  */
-function privateReply(ctx: Context, msg: any = {}) {
-  if (msg.length === 0) {
-    msg = ctx.message;
-  }
-  console.log('-- staff:1')
-  console.log(ctx.from)
-  console.log('--')
+function privateReply(ctx: Context) {
+  log({ label: 'staff: privateReply(ctx, msg)', type: 'info', msgs: [
+    ctx.message,
+  ] })
+
   // Msg to other end
   middleware.msg(
     ctx.session.modeData.userid,
-    ticketMsg(` ${ctx.session.modeData.name}`, msg),
+    ticketMsg(` ${ctx.session.modeData.name}`, ctx.message),
     {
       parse_mode: cache.config.parse_mode,
       reply_markup: {
         html: '',
         inline_keyboard: [
           [
-            cache.config.direct_reply ?
-              {
+            cache.config.direct_reply
+              ? {
                 text: cache.config.language.replyPrivate,
                 url: `https://t.me/${ctx.from.username}`,
-              } :
-              {
+              }
+              : {
                 text: cache.config.language.replyPrivate,
                 callback_data:
                   ctx.from.id +
@@ -180,7 +185,7 @@ function chat(ctx: Context) {
           // eslint-disable-next-line new-cap
           { parse_mode: cache.config.parse_mode }, /* .notifications(false) */
         );
-        console.log(`Answer: ` + ticketMsg(name[1], ctx.message));
+        // console.log(`Answer: ` + ticketMsg(name[1], ctx.message));
         cache.ticketSent[userid[1]] = null;
         // Check if auto close ticket
         if (cache.config.auto_close_tickets) {

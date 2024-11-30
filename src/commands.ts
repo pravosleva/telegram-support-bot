@@ -254,14 +254,14 @@ function reopenCommand(ctx: Context) {
   // get userid from ticketid
   db.getId(
     ticketId,
-    function (ticket?: { userid: string; id: { toString: () => string } }) {
+    function (ticket?: { userid: string; id: number }) {
       log({ label: `reopenCommand -> db.getId(${ticketId}) -> cb (before db.reopen)`, type: 'info', msgs: [
         `ticketId= ${ticketId} (${typeof ticketId})`, // SAMPLE: ticketId= 000004 (string)
         'ticket object:',
         ticket, // SAMPLE: { id: 5, userid: '432590698', status: 'closed', category: null }
       ] })
 
-      db.reopen(ticket.userid, '');
+      db.reopen(ticket.id, null);
 
       middleware.msg(
         ctx.chat.id,

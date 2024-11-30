@@ -122,37 +122,39 @@ interface Cache {
   markdown: string;
 }
 
+type TMessage = {
+  web_msg: boolean;
+  message_id: number;
+  from: {
+    id: number;
+    is_bot: boolean;
+    first_name: string;
+    username: string;
+    language_code: string;
+  };
+  chat: {
+    id: number;
+    first_name: string;
+    username?: string;
+    type: string;
+  };
+  date: number;
+  text: string;
+  reply_to_message: {
+    from: { is_bot: boolean };
+    text: string;
+    caption: string;
+  };
+  getFile?: any;
+  caption: string;
+};
+
 /**
  * Context
  */
 interface Context {
   update_id: number;
-  message: {
-    web_msg: boolean;
-    message_id: number;
-    from: {
-      id: number;
-      is_bot: boolean;
-      first_name: string;
-      username: string;
-      language_code: string;
-    };
-    chat: {
-      id: number;
-      first_name: string;
-      username?: string;
-      type: string;
-    };
-    date: number;
-    text: string;
-    reply_to_message: {
-      from: { is_bot: boolean };
-      text: string;
-      caption: string;
-    };
-    getFile?: any;
-    caption: string;
-  };
+  message: TMessage;
   chat: {
     id: number;
     first_name: string;
@@ -169,4 +171,4 @@ interface Context {
   getFile: Function;
 }
 
-export {SessionData, Context, Language, Config, Cache, ModeData};
+export {SessionData, Context, Language, Config, Cache, ModeData, TMessage};

@@ -72,12 +72,11 @@ const checkBan = function(
     userid: number,
     callback: { (ticket: any): any; (arg0: any): void },
 ) {
-  const searchDB = db
-    .prepare(
-      `select * from supportees where (userid = ` +
-      `${userid} or id = ${userid}) AND status='banned' `,
-    )
-    .get();
+  const cmd = [
+    // TODO: id only
+    `select * from supportees where (userid = ${userid} or id = ${userid}) AND status='banned'`,
+  ].join('')
+  const searchDB = db.prepare(cmd).get();
   callback(searchDB);
 };
 
@@ -85,14 +84,13 @@ const closeAll = function() {
   db.prepare(`UPDATE supportees SET status='closed'`).run();
 };
 
-const reopen = function(userid: any, category: string) {
-  db
-    .prepare(
-      `UPDATE supportees SET status='open'` +
-      `WHERE userid=${userid} or id='${userid}'` +
-      `${category ? `AND category = '${category}'` : ''}`,
-    )
-    .run();
+const reopen = function(ticketId: number, category: string | null) {
+  const cmd = [
+    `UPDATE supportees SET status='open' `,
+    // `WHERE userid=${userid} or id=${taskId} `,
+    `WHERE id=${ticketId}${category ? ` AND category = '${category}'` : ''}`
+  ].join('')
+  db.prepare(cmd).run();
 };
 
 const add = function(
@@ -109,7 +107,7 @@ const add = function(
     case 'closed':
       cmd = [
         `UPDATE supportees SET status='closed' WHERE `,
-        `(userid=${userid} or id='${userid}')`,
+        `(userid=${userid} or id=${userid})`,
         !!category ? ` AND category = '${category}'` : '',
       ].join('')
       msg = db
