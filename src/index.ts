@@ -13,6 +13,7 @@ import * as webserver from './addons/web';
 import * as signal from './addons/signal';
 import TelegramAddon from './addons/telegram';
 import { log } from '~/utils';
+import pkg from '../package.json';
 
 let defaultBot: TelegramAddon;
 
@@ -45,6 +46,8 @@ function createBot() {
 function main(bot: TelegramAddon = defaultBot, logs = true) {
   cache.setBot(defaultBot);
   // bot.sendMessage(cache.config.staffchat_id, 'Bot started');
+  bot.sendMessage(cache.config.owner_id, `Bot started ${pkg.version}`);
+
   // Check addon
   if (cache.config.signal_enabled) {
     signal.init(function (ctx: Context, msg: any[]) {
