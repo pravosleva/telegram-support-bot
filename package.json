@@ -15,7 +15,7 @@
     "main": "build/src/index.js",
     "scripts": {
         "tsc": "tsc",
-        "dev": "NODE_ENV=development ts-node-dev -r tsconfig-paths/register ./src/index.ts",
+        "dev": "NODE_ENV=development LOG_LEVEL=1 ts-node-dev -r tsconfig-paths/register ./src/index.ts",
         "prod": "ts-node -r tsconfig-paths/register ./src/index.ts",
         "build": "tsc && tsc-alias",
         "test": "NODE_ENV=test env TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\",\"baseUrl\":\"./\",\"paths\":{\"~/*\":[\"src/*\"]}}' mocha -r ts-node/register 'test/**/*.ts' --exit"

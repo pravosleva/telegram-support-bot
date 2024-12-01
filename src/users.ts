@@ -2,7 +2,7 @@ import { Context } from './interfaces';
 import cache from './cache';
 import * as db from './db';
 import * as middleware from './middleware';
-import { log } from '~/utils';
+// import { log } from '~/utils';
 
 /** Message template helper
  * @param {String} ticket
