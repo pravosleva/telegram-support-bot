@@ -116,7 +116,7 @@ interface Cache {
   ticketID: number | undefined;
   ticketIDs: Set<number>;
   ticketStatus: any;
-  ticketSent: any;
+  ticketSent: Map<number, number>;
   html: string;
   noSound: string;
   markdown: string;

@@ -21,24 +21,35 @@ function ticketMsg(
 
   const esc: any = middleware.strictEscape;
   if (cache.config.clean_replies) {
-    return esc(message.text)
+    return [
+      `${esc(message.text)} // ${esc(message.from.first_name)}`,
+      '\n\n--- _Original message_ ---\n',
+      esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
+      '\n---',
+    ].join('');
   }
   if (cache.config.anonymous_replies) {
-    return (
-      `${cache.config.language.dear} ${esc(name)},\n\n` +
-      `${esc(message.text)}\n\n` +
-      `${cache.config.language.regards}\n` +
-      `${cache.config.language.regardsGroup}`
-    );
+    return [
+      `${cache.config.language.dear} ${esc(name)}`,
+      '\n\n',
+      esc(message.text),
+      '\n\n',
+      cache.config.language.regards,
+      '\n',
+      cache.config.language.regardsGroup,
+      '\n\n--- _Original message_ ---\n',
+      esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
+      '\n---',
+    ].join('');
   }
   return [
     `${cache.config.language.dear} ${esc(name)},`,
     '\n\n',
-    `${esc(message.text)}`,
+    esc(message.text),
     '\n',
     `${cache.config.language.regards} // ${esc(message.from.first_name)}`,
     '\n\n--- _Original message_ ---\n',
-    message.reply_to_message.text,
+    esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
     '\n---',
   ].join('');
 }
@@ -105,7 +116,7 @@ function chat(ctx: Context) {
       return;
     }
     replyText = ctx.message.reply_to_message.text;
-    if (replyText === undefined) {
+    if (typeof replyText === 'undefined') {
       replyText = ctx.message.reply_to_message.caption;
     }
 
@@ -186,7 +197,8 @@ function chat(ctx: Context) {
           { parse_mode: cache.config.parse_mode }, /* .notifications(false) */
         );
         // console.log(`Answer: ` + ticketMsg(name[1], ctx.message));
-        cache.ticketSent[userid[1]] = null;
+        // cache.ticketSent[userid[1]] = null;
+        cache.ticketSent.delete(Number(userid[1]))
         // Check if auto close ticket
         if (cache.config.auto_close_tickets) {
           if (!isNaN(Number(userid[1])))

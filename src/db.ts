@@ -61,10 +61,10 @@ const getId = function(
 ) {
   const cmd = `select * from supportees where (userid = ${userid} or id = ${userid})`
   const searchDB = db.prepare(cmd).get();
-  log({ label: `db.getId(arg0, ...rst) -> searchDB (${typeof searchDB})`, type: 'info', msgs: [
-    searchDB, // SAMPLE: { id: 1, userid: '432590698', status: 'open', category: null }
-    `arg0: userid= ${userid} (${typeof userid})`,
-  ] })
+  // log({ label: `db.getId(arg0, ...rst) -> searchDB (${typeof searchDB})`, type: 'info', msgs: [
+  //   searchDB, // SAMPLE: { id: 1, userid: '432590698', status: 'open', category: null }
+  //   `arg0: userid= ${userid} (${typeof userid})`,
+  // ] })
   callback(searchDB);
 };
 
@@ -98,9 +98,9 @@ const add = function(
   status: 'closed' | 'open' | 'banned',
   category: string | number | null,
 ) {
-  log({ label: `db.add(${userid}[${typeof userid}], ${status}, ${category})`, type: 'warn', msgs: [
-    'called'
-  ] })
+  // log({ label: `db.add(${userid}[${typeof userid}], ${status}, ${category})`, type: 'warn', msgs: [
+  //   'called'
+  // ] })
   let msg;
   let cmd = ''
   switch (status) {
@@ -140,9 +140,9 @@ const add = function(
     default:
       break;
   }
-  log({ label: cmd, type: 'cmd.db', msgs: [
-    msg, // SAMPLE: { changes: 1, lastInsertRowid: 20 }
-  ] });
+  // log({ label: cmd, type: 'cmd.db', msgs: [
+  //   msg, // SAMPLE: { changes: 1, lastInsertRowid: 20 }
+  // ] });
   return msg.changes;
 };
 

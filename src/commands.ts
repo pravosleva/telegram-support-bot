@@ -30,7 +30,8 @@ function clearCommand(ctx: Context) {
   // cache.ticketIDs.length = 0;
   cache.ticketIDs.clear();
   cache.ticketStatus.length = 0;
-  cache.ticketSent.length = 0;
+  // cache.ticketSent.length = 0;
+  cache.ticketSent.clear();
   middleware.reply(
     ctx,
     'All tickets closed.',
@@ -188,7 +189,8 @@ function closeCommand(ctx: Context) {
     // delete cache.ticketIDs[userid];
     cache.ticketIDs.delete(userid);
     delete cache.ticketStatus[userid];
-    delete cache.ticketSent[userid];
+    // delete cache.ticketSent[userid];
+    cache.ticketSent.delete(userid);
   }, groups);
 }
 
@@ -238,7 +240,7 @@ function banCommand(ctx: Context) {
 function reopenCommand(ctx: Context) {
   if (!ctx.session.admin) return;
   // Get open tickets for any maintained label
-  const replyText = ctx.message.reply_to_message.text;
+  const replyText = ctx.message.reply_to_message.text || ctx.message.reply_to_message.caption;
 
   let ticketId: any = -1;
   ticketId = replyText.match(

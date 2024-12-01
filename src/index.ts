@@ -12,6 +12,7 @@ import * as error from './error';
 import * as webserver from './addons/web';
 import * as signal from './addons/signal';
 import TelegramAddon from './addons/telegram';
+import { log } from '~/utils';
 
 let defaultBot: TelegramAddon;
 
@@ -47,7 +48,7 @@ function main(bot: TelegramAddon = defaultBot, logs = true) {
   // Check addon
   if (cache.config.signal_enabled) {
     signal.init(function (ctx: Context, msg: any[]) {
-      console.log(msg);
+      log({ label: 'main: signal.init -> cb' , msgs: [msg] });
       text.handleText(bot, ctx, msg);
     });
   }
@@ -151,9 +152,7 @@ function main(bot: TelegramAddon = defaultBot, logs = true) {
   bot.on('callback_query', (ctx: Context) => inline.callbackQuery(ctx));
   bot.on([':photo'], (ctx: Context) => files.fileHandler('photo', bot, ctx));
   bot.on([':video'], (ctx: Context) => files.fileHandler('video', bot, ctx));
-  bot.on([':document'], (ctx: Context) =>
-    files.fileHandler('document', bot, ctx),
-  );
+  bot.on([':document'], (ctx: Context) => files.fileHandler('document', bot, ctx));
 
   // Bot regex
   bot.hears(cache.config.language.back, (ctx: Context) =>

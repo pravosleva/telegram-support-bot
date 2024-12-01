@@ -92,8 +92,9 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
   }
   cache.ticketStatus[cache.ticketID] = true;
 
+  const ticketSentCounterFromCache = cache.ticketSent.get(cache.ticketID)
   switch (true) {
-    case cache.ticketSent[cache.ticketID] === undefined:
+    case typeof ticketSentCounterFromCache === 'undefined':
       // NOTE: 1. Was not sent early
       // log({ label: 'users:case1 // Was not sent early', msgs: [
       //   `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
@@ -109,7 +110,6 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
               chat.id,
               [
                 cache.config.language.confirmationMessage,
-                '\n',
                 cache.config.show_user_ticket
                   ? `\n${cache.config.language.ticket} #T${ticket.id.toString().padStart(6, '0')}`
                   : ''
@@ -177,17 +177,20 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
       // wait 5 minutes before this message appears again and do not
       // send notification sounds in that time to avoid spam
       setTimeout(function () {
-        cache.ticketSent[cache.ticketID] = undefined;
+        // cache.ticketSent[cache.ticketID] = undefined;
+        cache.ticketSent.delete(cache.ticketID)
       }, cache.config.spam_time);
-      cache.ticketSent[cache.ticketID] = 0;
+      cache.ticketSent.set(cache.ticketID, 0);
       break
-    case cache.ticketSent[cache.ticketID] < cache.config.spam_cant_msg:
+    case ticketSentCounterFromCache < cache.config.spam_cant_msg:
       // NOTE: 2. Could be sent again
       // log({ label: 'users:case2 // Could be sent again', msgs: [
       //   `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
       // ] })
-  
-      cache.ticketSent[cache.ticketID]++;
+
+      // cache.ticketSent[cache.ticketID]++;
+      cache.ticketSent.set(cache.ticketID, ticketSentCounterFromCache + 1)
+
       db.getOpen(
         cache.ticketID,
         ctx.session.groupCategory,
@@ -222,13 +225,14 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
         },
       );
       break
-    case cache.ticketSent[cache.ticketID] === cache.config.spam_cant_msg:
+    case ticketSentCounterFromCache >= cache.config.spam_cant_msg:
       // NOTE: 3. Cant be sent again
       // log({ label: '- users:case3 // Cant be sent again', msgs: [
       //   `cache.ticketID: ${cache.ticketID} (${typeof cache.ticketID})`,
       // ] })
 
-      cache.ticketSent[cache.ticketID]++;
+      // cache.ticketSent[cache.ticketID]++;
+      cache.ticketSent.set(cache.ticketID, ticketSentCounterFromCache + 1)
 
       middleware.msg(chat.id, cache.config.language.blockedSpam, {
         parse_mode: cache.config.parse_mode,
@@ -246,14 +250,13 @@ function chat(ctx: Context, chat: { id: number; first_name: string; username?: s
     cache.ticketID,
     ctx.session.groupCategory,
     function (ticket: { id: { toString: () => string } }) {
-      console.log(
-        ticketMsg(
-          ticket.id,
-          ctx.message,
-          ctx.session.groupTag,
-          cache.config.anonymous_tickets,
-          autoReplyInfo,
-        ),
+      // log({ label: '(!!) users: db.getOpen -> cb' , msgs: [] });
+      ticketMsg(
+        ticket.id,
+        ctx.message,
+        ctx.session.groupTag,
+        cache.config.anonymous_tickets,
+        autoReplyInfo,
       );
     },
   );

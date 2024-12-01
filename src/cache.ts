@@ -22,7 +22,7 @@ class Singleton {
       ticketID: undefined,
       ticketIDs: new Set(),
       ticketStatus: {},
-      ticketSent: [],
+      ticketSent: new Map(),
       html: '',
       noSound: '',
       markdown: '',

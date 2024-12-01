@@ -13,7 +13,7 @@ import {Context} from './interfaces';
  * @param {Array} keys
  */
 function handleText(bot: TelegramAddon, ctx: any, keys: any[]) {
-  if (ctx.session.mode == 'private_reply') {
+  if (ctx.session.mode === 'private_reply') {
     staff.privateReply(ctx);
   } else if (
     cache.config.categories &&

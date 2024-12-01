@@ -78,6 +78,7 @@ language:
   automatedReplySent: 'Automated reply was send to the user.'
   ticketReopened: 'Ticket reopened.'
   regardsGroup: 'Botty Group'
+  yourTicketId: 'Your ticket id'
 
 autoreply:
   - question: 'install'
