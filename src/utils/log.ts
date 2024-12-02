@@ -30,14 +30,14 @@ export const log = ({ label, msgs, type }: TLogProps): void => {
   else
     switch (true) {
       case msgs.length > 0:
-        console.log(`╭ ${emoji[type] || '[no emoji]'} ${label}`)
+        console.log(`╭╴ ${emoji[type] || '[no emoji]'} ${label}`)
         for (let i = 0, max = msgs.length; i < max; i++) {
           if (typeof msgs[i] === 'object')
             console.log(JSON.stringify(msgs[i], null, 2))
           else
             console.log(`┤ ${msgs[i]}`)
         }
-        console.log('╰')
+        console.log('╰╴')
         break
       default:
         console.log(`-- ${emoji[type] || '[no emoji]'} ${label}`)

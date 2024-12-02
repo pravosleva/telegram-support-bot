@@ -25,9 +25,9 @@ function ticketMsg(
       return [
         `${esc(message.text)} // ${esc(message.from.first_name)}`,
         '\n',
-        '\n╭╴╴╴ _Original message_ ╴╴╴\n',
+        '\n--- _Original message_ ---\n',
         esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
-        '\n╰╴╴╴',
+        '\n---',
       ].join('');
     case cache.config.anonymous_replies:
       return [
@@ -39,9 +39,9 @@ function ticketMsg(
         '\n',
         cache.config.language.regardsGroup,
         '\n',
-        '\n╭╴╴╴ _Original message_ ╴╴╴\n',
+        '\n--- _Original message_ ---\n',
         esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
-        '\n╰╴╴╴',
+        '\n---',
       ].join('');
     default:
       return [
@@ -51,9 +51,9 @@ function ticketMsg(
         '\n',
         `${cache.config.language.regards} // ${esc(message.from.first_name)}`,
         '\n',
-        '\n╭╴╴╴ _Original message_ ╴╴╴\n',
+        '\n--- _Original message_ ---\n',
         esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
-        '\n╰╴╴╴',
+        '\n---',
       ].join('');
   }
 }

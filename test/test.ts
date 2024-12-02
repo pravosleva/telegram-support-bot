@@ -55,7 +55,7 @@ describe('Commands', function() {
         `__`;
       botAssert.assertCommandWildcard(
           'close',
-          `${lang.ticket} #T(.*) ${lang.closed}`,
+          `✅ ${lang.ticket} #T(.*) ${lang.closed}`,
           `${lang.ticket} #T(.*) ${lang.closed}\n\n${lang.ticketClosed}`,
       );
     });

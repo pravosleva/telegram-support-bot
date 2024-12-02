@@ -170,6 +170,7 @@ function closeCommand(ctx: Context) {
     middleware.reply(
       ctx,
       [
+        '✅',
         cache.config.language.ticket,
         `#T${ticketId.toString().padStart(6, '0')}`,
         cache.config.language.closed
@@ -180,6 +181,7 @@ function closeCommand(ctx: Context) {
     middleware.msg(
       userid,
       [
+        '✅',
         cache.config.language.ticket,
         `#T${ticketId.toString().padStart(6, '0')}`,
         `${cache.config.language.closed}\n\n${cache.config.language.ticketClosed}`,
