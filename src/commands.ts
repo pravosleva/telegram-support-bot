@@ -277,14 +277,15 @@ function reopenCommand(ctx: Context) {
         { parse_mode: cache.config.parse_mode }, /* .notifications(false) */
       );
 
-      middleware.msg(
-        ticket.userid,
-        [
-          `#T${ticket.id.toString().padStart(6, '0')}`,
-          cache.config.language.ticketReopened,
-        ].join(' '),
-        { parse_mode: cache.config.parse_mode }, /* .notifications(false) */
-      );
+      // NOTE: May be unnecessary (when autoclose on reply has enabled)
+      // middleware.msg(
+      //   ticket.userid,
+      //   [
+      //     `#T${ticket.id.toString().padStart(6, '0')}`,
+      //     cache.config.language.ticketReopened,
+      //   ].join(' '),
+      //   { parse_mode: cache.config.parse_mode }, /* .notifications(false) */
+      // );
     },
   );
 }
