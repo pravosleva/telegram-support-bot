@@ -20,38 +20,42 @@ function ticketMsg(
   ] })
 
   const esc: any = middleware.strictEscape;
-  if (cache.config.clean_replies) {
-    return [
-      `${esc(message.text)} // ${esc(message.from.first_name)}`,
-      '\n\n--- _Original message_ ---\n',
-      esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
-      '\n---',
-    ].join('');
+  switch (true) {
+    case cache.config.clean_replies:
+      return [
+        `${esc(message.text)} // ${esc(message.from.first_name)}`,
+        '\n',
+        '\n╭╴╴╴ _Original message_ ╴╴╴\n',
+        esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
+        '\n╰╴╴╴',
+      ].join('');
+    case cache.config.anonymous_replies:
+      return [
+        `${cache.config.language.dear} ${esc(name)}`,
+        '\n\n',
+        esc(message.text),
+        '\n\n',
+        cache.config.language.regards,
+        '\n',
+        cache.config.language.regardsGroup,
+        '\n',
+        '\n╭╴╴╴ _Original message_ ╴╴╴\n',
+        esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
+        '\n╰╴╴╴',
+      ].join('');
+    default:
+      return [
+        `${cache.config.language.dear} ${esc(name)},`,
+        '\n\n',
+        esc(message.text),
+        '\n',
+        `${cache.config.language.regards} // ${esc(message.from.first_name)}`,
+        '\n',
+        '\n╭╴╴╴ _Original message_ ╴╴╴\n',
+        esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
+        '\n╰╴╴╴',
+      ].join('');
   }
-  if (cache.config.anonymous_replies) {
-    return [
-      `${cache.config.language.dear} ${esc(name)}`,
-      '\n\n',
-      esc(message.text),
-      '\n\n',
-      cache.config.language.regards,
-      '\n',
-      cache.config.language.regardsGroup,
-      '\n\n--- _Original message_ ---\n',
-      esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
-      '\n---',
-    ].join('');
-  }
-  return [
-    `${cache.config.language.dear} ${esc(name)},`,
-    '\n\n',
-    esc(message.text),
-    '\n',
-    `${cache.config.language.regards} // ${esc(message.from.first_name)}`,
-    '\n\n--- _Original message_ ---\n',
-    esc(message.reply_to_message.text || message.reply_to_message.caption || 'No text or caption'),
-    '\n---',
-  ].join('');
 }
 
 /**
